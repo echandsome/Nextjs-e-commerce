@@ -84,7 +84,7 @@ https://bitex.namvar.dev ⤴️
 #### 💾 Cloning the repository
 
 ```shell
-git clone https://github.com/HosseinNamvar/bitex.git
+git clone https://github.com/echandsome/bitex.git
 ```
 
 #### 📥 Install packages
