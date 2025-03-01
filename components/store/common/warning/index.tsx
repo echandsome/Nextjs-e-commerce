@@ -13,7 +13,7 @@ const Warning = () => {
         <div className={styles.contact}>
           <span>Contact: </span>
           <Link
-            href={"https://www.linkedin.com/in/hossein-namvar/"}
+            href={""}
             title="My LinkedIn Profile"
             target="_blank"
           >
@@ -21,7 +21,7 @@ const Warning = () => {
             LinkedIn
           </Link>
           <Link
-            href={"mailto:hossein.namvar@gmail.com"}
+            href={""}
             title="Send Me an Email!"
           >
             Email
