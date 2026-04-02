@@ -10,12 +10,6 @@ Bitex is a full-stack E-Commerce project developed with Next.js 14, featuring a 
 
 ---
 
-#### 🔗 Live Version:
-
-https://bitex.namvar.dev ⤴️
-
----
-
 ### 🖥️ Admin Dashboard Features
 
 #### 🔐 Authentication:
@@ -84,7 +78,7 @@ https://bitex.namvar.dev ⤴️
 #### 💾 Cloning the repository
 
 ```shell
-git clone https://github.com/HosseinNamvar/bitex.git
+git clone https://github.com/echandsome/Nextjs-e-commerce.git
 ```
 
 #### 📥 Install packages
