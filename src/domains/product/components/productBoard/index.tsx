@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { FavoriteToggle } from "@/domains/store/favorites/components/FavoriteToggle";
 import AddToCartButton from "@/domains/store/shoppingCard/components/addToCartButton";
 import Quantity from "@/domains/store/shoppingCard/components/quantity";
-import { StarIcon, HeartIcon } from "@/shared/components/icons/svgIcons";
+import { StarIcon } from "@/shared/components/icons/svgIcons";
 import { TProductBoard } from "@/shared/types/product";
 import { TCartItem } from "@/shared/types/shoppingCart";
 
@@ -28,12 +29,9 @@ const ProductBoard = ({ boardData }: { boardData: TProductBoard }) => {
   };
   return (
     <div className="w-full relative flex flex-col">
-      <button className="absolute right-0 top-0 border-none p-1 bg-white">
-        <HeartIcon
-          width={22}
-          className="fill-white cursor-pointer transition-colors duration-300 stroke-1 stroke-gray-400 hover:fill-gray-300"
-        />
-      </button>
+      <div className="absolute right-0 top-0 p-1">
+        <FavoriteToggle productId={id} />
+      </div>
       <section className="block w-full">
         <div className="flex items-center gap-0.5">
           <StarIcon width={15} stroke="#856B0F" fill="#FFD643" />

@@ -9,6 +9,10 @@ export type TCartState = {
   isVisible: boolean;
 };
 
+export type TFavoritesState = {
+  ids: string[];
+};
+
 type QuantityChange = {
   productId: string;
   amount: number;
@@ -43,11 +47,45 @@ const cartSlice = createSlice({
   },
 });
 
+const favoritesInitialState: TFavoritesState = { ids: [] };
+
+const favoritesSlice = createSlice({
+  name: "favorites",
+  initialState: favoritesInitialState,
+  reducers: {
+    toggleFavorite: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const index = state.ids.indexOf(id);
+      if (index > -1) {
+        state.ids.splice(index, 1);
+      } else {
+        state.ids.push(id);
+      }
+    },
+    removeFavorite: (state, action: PayloadAction<string>) => {
+      state.ids = state.ids.filter((x) => x !== action.payload);
+    },
+  },
+});
+
+const persisted = loadState();
+
 export const shoppingCartStore = configureStore({
   reducer: {
     cart: cartSlice.reducer,
+    favorites: favoritesSlice.reducer,
   },
-  preloadedState: loadState(),
+  preloadedState: {
+    cart: {
+      ...initialState,
+      ...persisted.cart,
+      items: persisted.cart.items as TCartItem[],
+    },
+    favorites: {
+      ...favoritesInitialState,
+      ...persisted.favorites,
+    },
+  },
 });
 shoppingCartStore.subscribe(() => {
   saveState(shoppingCartStore.getState());
@@ -57,3 +95,4 @@ export type RootState = ReturnType<typeof shoppingCartStore.getState>;
 export type AppDispatch = typeof shoppingCartStore.dispatch;
 
 export const { add, remove, modifyQuantity, toggleCart } = cartSlice.actions;
+export const { toggleFavorite, removeFavorite } = favoritesSlice.actions;

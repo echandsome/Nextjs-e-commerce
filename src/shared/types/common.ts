@@ -8,6 +8,8 @@ export type TProductCard = {
   dealPrice?: number;
   imgUrl: [string, string];
   url: string;
+  /** When set, used for favorites; otherwise parsed from `url` if it matches `/product/:id`. */
+  productId?: string;
   staticWidth?: boolean;
 };
 

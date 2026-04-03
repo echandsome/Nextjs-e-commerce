@@ -163,6 +163,28 @@ export const getCartProducts = async (productIDs: string[]) => {
   }
 };
 
+export const getFavoriteProducts = async (productIDs: string[]) => {
+  if (!productIDs || productIDs.length === 0) return { res: [] };
+
+  try {
+    const result = await db.product.findMany({
+      where: { id: { in: productIDs } },
+      select: {
+        id: true,
+        name: true,
+        images: true,
+        price: true,
+        salePrice: true,
+        specialFeatures: true,
+        isAvailable: true,
+      },
+    });
+    return { res: result };
+  } catch (error) {
+    return { error: JSON.stringify(error) };
+  }
+};
+
 export const deleteProduct = async (productID: string) => {
   if (!productID || productID === "") return { error: "Invalid Data!" };
   try {
@@ -193,9 +215,9 @@ const generateSpecTable = async (rawSpec: ProductSpec[]) => {
     const specifications: TSpecification[] = [];
 
     rawSpec.forEach((spec) => {
-      const groupSpecIndex = result.findIndex((g) => g.id === spec.specGroupID);
+      const groupSpecIndex = result.findIndex((g: { id: string }) => g.id === spec.specGroupID);
       const tempSpecs: { name: string; value: string }[] = [];
-      spec.specValues.forEach((s, index) => {
+      spec.specValues.forEach((s: string, index: number) => {
         tempSpecs.push({
           name: result[groupSpecIndex].specs[index] || "",
           value: s || "",

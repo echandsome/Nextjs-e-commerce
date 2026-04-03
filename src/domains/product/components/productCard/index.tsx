@@ -1,8 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { FavoriteToggle } from "@/domains/store/favorites/components/FavoriteToggle";
 import { TProductCard } from "@/shared/types/common";
 import { cn } from "@/shared/utils/styling";
+
+function resolveProductCardId(productId: string | undefined, url: string): string | null {
+  if (productId) return productId;
+  const match = url.match(/\/product\/([^/?#]+)/);
+  return match?.[1] ?? null;
+}
 
 const ProductCard = ({
   name,
@@ -12,81 +19,87 @@ const ProductCard = ({
   specs,
   url,
   isAvailable = true,
+  productId: productIdProp,
   staticWidth = false,
 }: TProductCard) => {
+  const favoriteProductId = resolveProductCardId(productIdProp, url);
+
   return (
-    <Link
-      href={url}
+    <div
       className={cn(
-        "bg-white rounded-xl p-2 transition-all duration-500 relative hover:drop-shadow-sm hover:[&_.imageWrapper>img:last-child]:opacity-100 hover:[&_.imageWrapper>img:last-child]:scale-[1.05]",
+        "relative rounded-xl bg-white p-2 transition-all duration-500 hover:drop-shadow-sm hover:[&_.imageWrapper>img:last-child]:opacity-100 hover:[&_.imageWrapper>img:last-child]:scale-[1.05]",
         staticWidth && "min-w-64"
       )}
     >
-      {!isAvailable && (
-        <div className="flex left-2 right-2 bottom-2 top-2 bg-white/40 backdrop-blur-[1px] absolute z-[1] items-center justify-center rounded-lg">
-          <span className="mt-14 text-gray-100 font-light px-6 py-1 backdrop-blur-[6px] rounded-md shadow-gray-200 bg-black/60">
-            Out of Stock
-          </span>
-        </div>
-      )}
-      <div className="imageWrapper hover:border-gray-300 w-full h-[225px] block relative rounded-xl border border-gray-200 overflow-hidden transition-all duration-500">
-        <Image
-          src={imgUrl[0]}
-          alt={name}
-          fill
-          sizes="(max-width: 240px)"
-          className="object-contain transition-all duration-400 ease-out"
-        />
-        <Image
-          src={imgUrl[1]}
-          alt={name}
-          fill
-          sizes="(max-width: 240px)"
-          className="object-contain transition-all duration-400 ease-out opacity-0 scale-[0.9]"
-        />
-      </div>
-      <span className="inline-block text-gray-800 mt-2.5 mb-2 ml-2">{name}</span>
-      <div className="h-16 flex flex-col">
-        {specs.map((spec, index) => (
-          <span key={index} className="block text-sm ml-2 text-gray-600">
-            {spec}
-          </span>
-        ))}
-      </div>
-      <div className="flex items-center h-10 mt-6 ml-2">
-        <div className="flex-grow relative">
-          {dealPrice ? (
-            <>
-              <div className="w-48 h-5 flex justify-start absolute -top-6">
-                <span className="font-medium block text-sm rounded-sm px-2 pt-[1px] text-red-800 bg-red-200">
-                  -
-                  {(100 - (dealPrice / price) * 100).toLocaleString("en-us", {
-                    maximumFractionDigits: 0,
-                  })}
-                  %
-                </span>
-                <span className="block w-full line-through text-gray-700 text-sm ml-2">
-                  was {price.toLocaleString("en-us", { minimumFractionDigits: 2 })}€
-                </span>
-              </div>
-              <span className="text-lg font-medium text-gray-800">
-                {dealPrice.toLocaleString("en-us", {
-                  minimumFractionDigits: 2,
-                })}
-                €
-              </span>
-            </>
-          ) : (
-            <span className="text-lg font-medium text-gray-800">
-              {price.toLocaleString("en-us", { minimumFractionDigits: 2 })}€
+      <Link href={url} className="block">
+        {!isAvailable && (
+          <div className="absolute left-2 right-2 top-2 z-[1] flex bottom-2 items-center justify-center rounded-lg bg-white/40 backdrop-blur-[1px]">
+            <span className="mt-14 rounded-md bg-black/60 px-6 py-1 font-light text-gray-100 shadow-gray-200 backdrop-blur-[6px]">
+              Out of Stock
             </span>
-          )}
+          </div>
+        )}
+        <div className="imageWrapper relative block h-[225px] w-full overflow-hidden rounded-xl border border-gray-200 transition-all duration-500 hover:border-gray-300">
+          <Image
+            src={imgUrl[0]}
+            alt={name}
+            fill
+            sizes="(max-width: 240px)"
+            className="object-contain transition-all duration-400 ease-out"
+          />
+          <Image
+            src={imgUrl[1]}
+            alt={name}
+            fill
+            sizes="(max-width: 240px)"
+            className="scale-[0.9] object-contain opacity-0 transition-all duration-400 ease-out"
+          />
         </div>
-        <div className="flex-grow text-right">
-          <button className="cursor-pointer size-9 border-none bg-no-repeat bg-center rounded-sm opacity-60 transition-opacity duration-300 hover:opacity-100 bg-black/0 bg-[url('/icons/heartIcon.svg')] bg-[length:20px_18px]" />
+        <span className="mb-2 ml-2 mt-2.5 inline-block text-gray-800">{name}</span>
+        <div className="flex h-16 flex-col">
+          {specs.map((spec, index) => (
+            <span key={index} className="ml-2 block text-sm text-gray-600">
+              {spec}
+            </span>
+          ))}
         </div>
-      </div>
-    </Link>
+        <div className="ml-2 mt-6 flex h-10 items-center pr-11">
+          <div className="relative flex-grow">
+            {dealPrice ? (
+              <>
+                <div className="absolute -top-6 flex h-5 w-48 justify-start">
+                  <span className="block rounded-sm bg-red-200 px-2 pt-[1px] text-sm font-medium text-red-800">
+                    -
+                    {(100 - (dealPrice / price) * 100).toLocaleString("en-us", {
+                      maximumFractionDigits: 0,
+                    })}
+                    %
+                  </span>
+                  <span className="ml-2 block w-full text-sm text-gray-700 line-through">
+                    was {price.toLocaleString("en-us", { minimumFractionDigits: 2 })}€
+                  </span>
+                </div>
+                <span className="text-lg font-medium text-gray-800">
+                  {dealPrice.toLocaleString("en-us", {
+                    minimumFractionDigits: 2,
+                  })}
+                  €
+                </span>
+              </>
+            ) : (
+              <span className="text-lg font-medium text-gray-800">
+                {price.toLocaleString("en-us", { minimumFractionDigits: 2 })}€
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+      {favoriteProductId ? (
+        <div className="absolute bottom-3 right-2 z-[2]">
+          <FavoriteToggle productId={favoriteProductId} iconWidth={20} />
+        </div>
+      ) : null}
+    </div>
   );
 };
 
