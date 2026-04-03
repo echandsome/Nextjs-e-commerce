@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "./db";
+import { verifyPassword } from "./password";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -28,10 +29,17 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        if (credentials.password !== user.hashedPassword) {
+        const valid = await verifyPassword(credentials.password, user.hashedPassword);
+        if (!valid) {
           throw new Error("Invalid credentials");
         }
-        return user;
+
+        return {
+          id: user.id,
+          email: user.email ?? undefined,
+          name: user.name ?? undefined,
+          image: user.image ?? undefined,
+        };
       },
     }),
   ],

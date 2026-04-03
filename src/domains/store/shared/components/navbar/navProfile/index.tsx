@@ -1,5 +1,6 @@
-"use-client";
+"use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 
 import { ProfileIcon } from "@/shared/components/icons/svgIcons";
@@ -35,8 +36,22 @@ const NavBarProfile = () => {
           isActive && "scale-100 visible opacity-100"
         )}
       >
-        <Button className="border-white font-semibold text-sm hover:bg-gray-100">Sign In</Button>
-        <Button className="border-white font-semibold text-sm hover:bg-gray-100">Sign Up</Button>
+        <Link
+          href="/login"
+          className={cn(
+            "flex w-full cursor-pointer items-center justify-center rounded-lg border border-white px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-100"
+          )}
+        >
+          Sign In
+        </Link>
+        <Link
+          href="/signup"
+          className={cn(
+            "flex w-full cursor-pointer items-center justify-center rounded-lg border border-white px-4 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-100"
+          )}
+        >
+          Sign Up
+        </Link>
       </div>
     </div>
   );
